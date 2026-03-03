@@ -61,7 +61,7 @@ if __name__ == "__main__":  # noqa
     parser.add_argument(
         "--save",
         action="store_true",
-        help="Append parsed kanji to data/kanjis.json (asks before overwrite)",
+        help="Append parsed kanji to data/kanjis.json",
     )
     args = parser.parse_args()
 
