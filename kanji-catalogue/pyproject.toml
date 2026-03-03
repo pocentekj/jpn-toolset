@@ -1,0 +1,28 @@
+[project]
+name = "kanji-catalogue"
+version = "0.0.1"
+description = "Personal kanji catalogue with GTK"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "orjson>=3.11.7",
+    "pygobject>=3.54.5",
+]
+package = true
+
+[dependency-groups]
+dev = [
+    "coverage>=7.13.1",
+    "ipdb>=0.13.13",
+    "ipython>=9.9.0",
+    "pygobject-stubs>=2.16.0",
+    "pyright>=1.1.408",
+    "ruff>=0.14.13",
+]
+
+[tool.coverage.run]
+command_line = "-m unittest"
+omit = ["tests.py"]
+
+[tool.coverage.report]
+show_missing = true
