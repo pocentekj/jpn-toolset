@@ -1,0 +1,8 @@
+# IDE and editor stuff
+Session.vim
+
+# Environ
+.envrc
+
+# Project directories
+/target

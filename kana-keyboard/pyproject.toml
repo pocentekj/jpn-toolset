@@ -1,0 +1,26 @@
+[project]
+name = "kana-keyboard"
+version = "0.1.0"
+description = "Graphical interface for typing Japanese characters made with Python and GTK 4."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "orjson>=3.11.7",
+    "pygobject>=3.56.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipdb>=0.13.13",
+    "ipython>=9.11.0",
+    "isort>=8.0.1",
+    "pyright>=1.1.408",
+    "ruff>=0.15.5",
+]
+
+[build-system]
+requires = ["uv_build>=0.10,<0.11"]
+build-backend = "uv_build"
+
+[project.scripts]
+kana-keyboard = "kana_keyboard.main:main"

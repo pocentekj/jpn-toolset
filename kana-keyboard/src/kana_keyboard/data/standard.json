@@ -1,0 +1,401 @@
+[
+  [
+    {
+      "hira": "あ",
+      "kata": "ア",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "い",
+      "kata": "イ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "う",
+      "kata": "ウ",
+      "dakuten_hira": "ゔ",
+      "dakuten_kata": "ヴ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "え",
+      "kata": "エ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "お",
+      "kata": "オ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "か",
+      "kata": "カ",
+      "dakuten_hira": "が",
+      "dakuten_kata": "ガ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "き",
+      "kata": "キ",
+      "dakuten_hira": "ぎ",
+      "dakuten_kata": "ギ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "く",
+      "kata": "ク",
+      "dakuten_hira": "ぐ",
+      "dakuten_kata": "グ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "け",
+      "kata": "ケ",
+      "dakuten_hira": "げ",
+      "dakuten_kata": "ゲ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "こ",
+      "kata": "コ",
+      "dakuten_hira": "ご",
+      "dakuten_kata": "ゴ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "さ",
+      "kata": "サ",
+      "dakuten_hira": "ざ",
+      "dakuten_kata": "ザ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "し",
+      "kata": "シ",
+      "dakuten_hira": "じ",
+      "dakuten_kata": "ジ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "す",
+      "kata": "ス",
+      "dakuten_hira": "ず",
+      "dakuten_kata": "ズ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "せ",
+      "kata": "セ",
+      "dakuten_hira": "ぜ",
+      "dakuten_kata": "ゼ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "そ",
+      "kata": "ソ",
+      "dakuten_hira": "ぞ",
+      "dakuten_kata": "ゾ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "た",
+      "kata": "タ",
+      "dakuten_hira": "だ",
+      "dakuten_kata": "ダ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "ち",
+      "kata": "チ",
+      "dakuten_hira": "ぢ",
+      "dakuten_kata": "ヂ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "つ",
+      "kata": "ツ",
+      "dakuten_hira": "づ",
+      "dakuten_kata": "ヅ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "て",
+      "kata": "テ",
+      "dakuten_hira": "で",
+      "dakuten_kata": "デ",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "と",
+      "kata": "ト",
+      "dakuten_hira": "ど",
+      "dakuten_kata": "ド",
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "な",
+      "kata": "ナ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "に",
+      "kata": "ニ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "ぬ",
+      "kata": "ヌ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "ね",
+      "kata": "ネ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "の",
+      "kata": "ノ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "は",
+      "kata": "ハ",
+      "dakuten_hira": "ば",
+      "dakuten_kata": "バ",
+      "handakuten_hira": "ぱ",
+      "handakuten_kata": "パ"
+    },
+    {
+      "hira": "ひ",
+      "kata": "ヒ",
+      "dakuten_hira": "び",
+      "dakuten_kata": "ビ",
+      "handakuten_hira": "ぴ",
+      "handakuten_kata": "ピ"
+    },
+    {
+      "hira": "ふ",
+      "kata": "フ",
+      "dakuten_hira": "ぶ",
+      "dakuten_kata": "ブ",
+      "handakuten_hira": "ぷ",
+      "handakuten_kata": "プ"
+    },
+    {
+      "hira": "へ",
+      "kata": "ヘ",
+      "dakuten_hira": "べ",
+      "dakuten_kata": "ベ",
+      "handakuten_hira": "ぺ",
+      "handakuten_kata": "ペ"
+    },
+    {
+      "hira": "ほ",
+      "kata": "ホ",
+      "dakuten_hira": "ぼ",
+      "dakuten_kata": "ボ",
+      "handakuten_hira": "ぽ",
+      "handakuten_kata": "ポ"
+    }
+  ],
+  [
+    {
+      "hira": "ま",
+      "kata": "マ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "み",
+      "kata": "ミ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "む",
+      "kata": "ム",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "め",
+      "kata": "メ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "も",
+      "kata": "モ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "や",
+      "kata": "ヤ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    null,
+    {
+      "hira": "ゆ",
+      "kata": "ユ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    null,
+    {
+      "hira": "よ",
+      "kata": "ヨ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "ら",
+      "kata": "ラ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "り",
+      "kata": "リ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "る",
+      "kata": "ル",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "れ",
+      "kata": "レ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    {
+      "hira": "ろ",
+      "kata": "ロ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "わ",
+      "kata": "ワ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    null,
+    null,
+    null,
+    {
+      "hira": "を",
+      "kata": "ヲ",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    }
+  ],
+  [
+    {
+      "hira": "ん",
+      "kata": "ン",
+      "dakuten_hira": null,
+      "dakuten_kata": null,
+      "handakuten_hira": null,
+      "handakuten_kata": null
+    },
+    null,
+    null,
+    null,
+    null
+  ]
+]

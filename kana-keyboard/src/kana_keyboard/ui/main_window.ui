@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+
+  <template class="MainWindow" parent="GtkApplicationWindow">
+    <property name="title">Kana Keyboard</property>
+    <property name="default-width">900</property>
+    <property name="default-height">600</property>
+
+    <child>
+      <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="spacing">8</property>
+        <style>
+          <class name="main-window-root"/>
+        </style>
+
+        <!-- TOP -->
+        <child>
+          <object class="GtkScrolledWindow" id="buffer_scroller">
+            <property name="hexpand">true</property>
+            <property name="vexpand">false</property>
+            <property name="min-content-height">120</property>
+            <style>
+              <class name="buffer-scroller"/>
+            </style>
+
+            <child>
+              <object class="TextArea" id="text_area"/>
+            </child>
+          </object>
+        </child>
+
+        <!-- KEYBOARDS -->
+        <child>
+          <object class="GtkBox" id="center_box">
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <property name="hexpand">true</property>
+            <property name="vexpand">true</property>
+            <style>
+              <class name="center-box"/>
+            </style>
+            <child>
+              <object class="GtkStackSwitcher" id="main_stack_switcher">
+                <property name="halign">center</property>
+                <property name="stack">main_stack</property>
+                <style>
+                  <class name="main-stack-switcher"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStack" id="main_stack">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="transition-type">slide-left-right</property>
+                <property name="transition-duration">200</property>
+                <style>
+                  <class name="main-stack"/>
+                </style>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">kana</property>
+                    <property name="title">Kana</property>
+                    <property name="child">
+                      <object class="KanaPage" id="kana_page"/>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">kanji</property>
+                    <property name="title">Kanji</property>
+                    <property name="child">
+                      <object class="KanjiPage" id="kanji_page"/>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- STATUS BAR -->
+        <child>
+          <object class="GtkLabel" id="status_label">
+            <property name="label">Ready</property>
+            <property name="halign">start</property>
+            <property name="xalign">0.0</property>
+            <style>
+              <class name="status-label"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

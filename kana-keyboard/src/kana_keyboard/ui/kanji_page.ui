@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+
+  <template class="KanjiPage" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <property name="spacing">8</property>
+    <property name="hexpand">true</property>
+    <property name="vexpand">true</property>
+
+    <style>
+      <class name="keyboard-page"/>
+      <class name="kanji-page"/>
+    </style>
+
+    <!-- Search inputs -->
+    <child>
+      <object class="GtkBox" id="search_box">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">8</property>
+
+        <child>
+          <object class="GtkSearchEntry" id="kanji_search_entry">
+            <property name="hexpand">true</property>
+            <property name="placeholder-text">Search by kanji…</property>
+            <signal name="search-changed" handler="on_search_by_kanji"/>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkSearchEntry" id="reading_search_entry">
+            <property name="hexpand">true</property>
+            <property name="placeholder-text">Search by reading…</property>
+            <signal name="search-changed" handler="on_search_by_readings"/>
+          </object>
+        </child>
+      </object>
+    </child>
+
+    <!-- Results -->
+    <child>
+      <object class="GtkScrolledWindow" id="results_scroller">
+        <property name="hexpand">true</property>
+        <property name="vexpand">true</property>
+        <property name="hscrollbar-policy">never</property>
+
+        <child>
+          <object class="GtkFlowBox" id="results_box">
+            <property name="selection-mode">none</property>
+            <property name="row-spacing">8</property>
+            <property name="column-spacing">8</property>
+            <property name="margin-top">4</property>
+            <property name="margin-bottom">4</property>
+            <property name="margin-start">4</property>
+            <property name="margin-end">4</property>
+            <property name="homogeneous">true</property>
+            <property name="valign">start</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

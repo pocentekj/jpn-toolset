@@ -1,0 +1,6 @@
+# Editor & IDE stuff
+Session.vim
+
+# Local development
+.envrc
+.tmuxp.yaml
