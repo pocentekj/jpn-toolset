@@ -28,25 +28,28 @@ def save_kanji(entry: Kanji) -> None:
             INSERT INTO kanjis (
                 kanji,
                 on_readings,
+                on_readings_norm,
                 kun_readings,
                 meaning,
-                ids,
-                components
+                components,
+                freq
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(kanji) DO UPDATE SET
                 on_readings = excluded.on_readings,
+                on_readings_norm = excluded.on_readings_norm,
                 kun_readings = excluded.kun_readings,
                 meaning = excluded.meaning,
-                ids = excluded.ids,
-                components = excluded.components
+                components = excluded.components,
+                freq = excluded.freq
             """,
             (
                 entry.kanji,
-                entry.readings.on,
-                entry.readings.kun,
+                entry.on_readings,
+                entry.on_readings_norm,
+                entry.kun_readings,
                 entry.meaning,
-                entry.components.ids,
-                entry._components_text,
+                entry.components,
+                entry.freq,
             ),
         )

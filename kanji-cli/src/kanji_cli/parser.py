@@ -1,9 +1,13 @@
-# This code is mostly AI-generated
-
-import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
+from .helpers import (
+    kata_to_hira,
+    normalize_kun_reading,
+    strip_ns,
+    join_or_none,
+)
 from .kanji import Kanji
 
 
@@ -11,44 +15,19 @@ KVG_NS = "http://kanjivg.tagaini.net"
 KVG = f"{{{KVG_NS}}}"
 
 
-def _strip_ns(tag: str) -> str:
-    if "}" in tag:
-        return tag.rsplit("}", 1)[1]
-    return tag
-
-
-def _first_english_meaning(rmgroup: ET.Element) -> str | None:
-    for meaning in rmgroup.findall("meaning"):
-        # KANJIDIC2: meanings without m_lang are English
-        if meaning.get("m_lang") is None:
-            txt = (meaning.text or "").strip()
-            if txt:
-                return txt
-    return None
-
-
-def _all_readings(rmgroup: ET.Element, r_type: str) -> list[str]:
-    out: list[str] = []
-    for reading in rmgroup.findall("reading"):
-        if reading.get("r_type") == r_type:
-            txt = (reading.text or "").strip()
-            if txt:
-                out.append(txt)
-    return out
-
-
 @dataclass(slots=True)
 class KanjiDicEntry:
-    literal: str
-    meaning: str | None
-    on: list[str]
-    kun: list[str]
-    nanori: list[str]
+    kanji: str
+    meanings: list[str]
+    on_readings: list[str]
+    kun_readings: list[str]
+    name_readings: list[str]
+    freq: int
 
 
 def load_kanjidic2(path: str | Path) -> dict[str, KanjiDicEntry]:
     """
-    Load KANJIDIC2 into a dict keyed by kanji literal.
+    Load KANJIDIC2 into a dict keyed by kanji.
     """
     tree = ET.parse(path)
     root = tree.getroot()
@@ -56,287 +35,203 @@ def load_kanjidic2(path: str | Path) -> dict[str, KanjiDicEntry]:
     out: dict[str, KanjiDicEntry] = {}
 
     for char_el in root.findall("character"):
-        literal = char_el.findtext("literal")
-        if not literal:
+        kanji = char_el.findtext("literal")
+        if not kanji:
             continue
 
-        rm = char_el.find("reading_meaning")
-        if rm is None:
-            out[literal] = KanjiDicEntry(
-                literal=literal,
-                meaning=None,
-                on=[],
-                kun=[],
-                nanori=[],
-            )
-            continue
+        meanings: list[str] = []
+        on_readings: list[str] = []
+        kun_readings: list[str] = []
+        name_readings: list[str] = []
 
-        rmgroup = rm.find("rmgroup")
-        if rmgroup is None:
-            out[literal] = KanjiDicEntry(
-                literal=literal,
-                meaning=None,
-                on=[],
-                kun=[],
-                nanori=[],
-            )
-            continue
+        freq_text = char_el.findtext("misc/freq")
+        freq = int(freq_text) if freq_text else 999999
 
-        meaning = _first_english_meaning(rmgroup)
-        on = _all_readings(rmgroup, "ja_on")
-        kun = _all_readings(rmgroup, "ja_kun")
+        reading_meaning = char_el.find("reading_meaning")
+        if reading_meaning is not None:
+            rmgroup = reading_meaning.find("rmgroup")
+            if rmgroup is not None:
+                for reading_el in rmgroup.findall("reading"):
+                    r_type = reading_el.get("r_type")
+                    value = (reading_el.text or "").strip()
+                    if not value:
+                        continue
 
-        nanori: list[str] = []
-        for nanori_el in rm.findall("nanori"):
-            txt = (nanori_el.text or "").strip()
-            if txt:
-                nanori.append(txt)
+                    if r_type == "ja_on":
+                        on_readings.append(value)
+                    elif r_type == "ja_kun":
+                        kun_readings.append(normalize_kun_reading(value))
 
-        out[literal] = KanjiDicEntry(
-            literal=literal,
-            meaning=meaning,
-            on=on,
-            kun=kun,
-            nanori=nanori,
+                for meaning_el in rmgroup.findall("meaning"):
+                    # English meanings in KANJIDIC2 usually have no m_lang
+                    if meaning_el.get("m_lang") is None:
+                        value = (meaning_el.text or "").strip()
+                        if value:
+                            meanings.append(value)
+
+            for nanori_el in reading_meaning.findall("nanori"):
+                value = (nanori_el.text or "").strip()
+                if value:
+                    name_readings.append(value)
+
+        out[kanji] = KanjiDicEntry(
+            kanji=kanji,
+            meanings=meanings,
+            on_readings=on_readings,
+            kun_readings=kun_readings,
+            name_readings=name_readings,
+            freq=freq,
         )
 
     return out
 
 
-@dataclass(slots=True)
-class KvgNode:
-    element: str
-    original: str | None
-    position: str | None
-    children: list["KvgNode"]
-
-
-def _semantic_children(el: ET.Element) -> list[ET.Element]:
+def semantic_children(el: ET.Element) -> list[ET.Element]:
     """
-    Return immediate semantic child groups.
-
-    KanjiVG often nests <g> wrappers; we want the first descendant groups
-    that actually carry kvg:element.
+    Return descendant <g> nodes that carry semantic kvg:element information.
     """
     out: list[ET.Element] = []
 
     for child in list(el):
-        if _strip_ns(child.tag) != "g":
+        if strip_ns(child.tag) != "g":
             continue
 
         if child.get(f"{KVG}element"):
             out.append(child)
         else:
-            out.extend(_semantic_children(child))
+            out.extend(semantic_children(child))
 
     return out
 
 
-def _build_kvg_node(el: ET.Element) -> KvgNode:
-    children = [_build_kvg_node(ch) for ch in _semantic_children(el)]
-    return KvgNode(
-        element=el.get(f"{KVG}element", ""),
-        original=el.get(f"{KVG}original"),
-        position=el.get(f"{KVG}position"),
-        children=children,
-    )
-
-
-def _find_main_g(kanji_el: ET.Element) -> ET.Element | None:
+def find_main_g(kanji_el: ET.Element) -> ET.Element | None:
     """
-    Find the main <g kvg:element="..."> for one kanji block.
+    Find the main semantic group for one kanji entry.
     """
     for el in kanji_el.iter():
-        if _strip_ns(el.tag) != "g":
+        if strip_ns(el.tag) != "g":
             continue
         if el.get(f"{KVG}element"):
             return el
     return None
 
 
-def load_kanjivg(path: str | Path) -> dict[str, KvgNode]:
+def component_gloss(
+    element: str,
+    original: str | None,
+    kanjidic: dict[str, KanjiDicEntry],
+) -> str | None:
     """
-    Load KanjiVG into a dict keyed by kanji literal.
+    Return a short English gloss for a component.
 
-    Works with the combined XML dump where many <kanji> entries are stored
-    in one file.
+    Prefer original/base form when available, e.g.:
+      ⺅ ( 人 ) -> gloss from 人
+    Otherwise use the component element itself.
+    """
+    lookup = original if original and original != element else element
+    entry = kanjidic.get(lookup)
+    if entry is None:
+        return None
+
+    # take first English meaning as a compact gloss
+    if not entry.meanings:
+        return None
+
+    return entry.meanings[0]
+
+
+def collect_top_components(
+    main_g: ET.Element,
+    kanjidic: dict[str, KanjiDicEntry],
+) -> list[str]:
+    """
+    Collect top-level components for a kanji, without IDS.
+
+    Output examples:
+        耳 ear
+        ⺅ ( 人 ) person
+    """
+    components: list[str] = []
+
+    for child in semantic_children(main_g):
+        element = child.get(f"{KVG}element")
+        if not element:
+            continue
+
+        original = child.get(f"{KVG}original")
+
+        if original and original != element:
+            label = f"{element} ( {original} )"
+        else:
+            label = element
+
+        gloss = component_gloss(element, original, kanjidic)
+        if gloss:
+            components.append(f"{label} {gloss}")
+        else:
+            components.append(label)
+
+    return components
+
+
+def load_kanjivg_components(
+    path: str | Path,
+    kanjidic: dict[str, KanjiDicEntry],
+) -> dict[str, list[str]]:
+    """
+    Load KanjiVG and map:
+        kanji -> ["component gloss", ...]
     """
     tree = ET.parse(path)
     root = tree.getroot()
 
-    out: dict[str, KvgNode] = {}
+    out: dict[str, list[str]] = {}
 
     for kanji_el in root.iter():
-        if _strip_ns(kanji_el.tag) != "kanji":
+        if strip_ns(kanji_el.tag) != "kanji":
             continue
 
-        main_g = _find_main_g(kanji_el)
+        main_g = find_main_g(kanji_el)
         if main_g is None:
             continue
 
-        literal = main_g.get(f"{KVG}element")
-        if not literal:
+        kanji = main_g.get(f"{KVG}element")
+        if not kanji:
             continue
 
-        out[literal] = _build_kvg_node(main_g)
+        components = collect_top_components(main_g, kanjidic)
+        out[kanji] = components
 
     return out
 
 
-def _meaning_for_component(
-    ch: str | None,
-    kanjidic: dict[str, KanjiDicEntry],
-) -> str:
-    if not ch:
-        return ""
-    entry = kanjidic.get(ch)
-    if not entry or not entry.meaning:
-        return ""
-    return entry.meaning
-
-
-def _display_component_char(node: KvgNode) -> str:
-    """
-    Prefer original form when KanjiVG tells us that the visible shape is
-    a variant component form.
-
-    Example:
-      node.element   = 牜
-      node.original  = 牛
-      result         = "牜 ( 牛 )"
-    """
-    if node.original and node.original != node.element:
-        return f"{node.element} ( {node.original} )"
-    return node.element
-
-
-def _effective_component_key(node: KvgNode) -> str:
-    """
-    Which character should we use when looking up meaning?
-    Prefer the original/base character if available.
-    """
-    if node.original:
-        return node.original
-    return node.element
-
-
-def _collapse_single_child_chain(node: KvgNode) -> KvgNode:
-    """
-    KanjiVG sometimes wraps structure in a chain of single-child groups.
-    Descend until decomposition becomes meaningful.
-    """
-    cur = node
-    while len(cur.children) == 1:
-        cur = cur.children[0]
-    return cur
-
-
-def _infer_ids(children: list[KvgNode]) -> str | None:
-    """
-    Best-effort IDS inference from KanjiVG position attributes.
-    This is intentionally conservative.
-    """
-    if len(children) < 2:
-        return None
-
-    positions = {c.position for c in children if c.position}
-
-    if len(children) == 2:
-        if {"left", "right"} <= positions:
-            return "⿰"
-        if {"top", "bottom"} <= positions:
-            return "⿱"
-        if {"nyo", "right"} <= positions:
-            return "⿺"
-        if {"tare", "inside"} <= positions:
-            return "⿸"
-        if {"kamae", "inside"} <= positions:
-            return "⿴"
-        return None
-
-    if len(children) == 3:
-        if {"left", "right"} <= positions and (
-            "center" in positions or "middle" in positions
-        ):
-            return "⿲"
-        if {"top", "bottom"} <= positions and (
-            "center" in positions or "middle" in positions
-        ):
-            return "⿳"
-        return None
-
-    return None
-
-
-def build_raw_components_text(
-    kanji: str,
-    kanjidic: dict[str, KanjiDicEntry],
-    kanjivg: dict[str, KvgNode],
-) -> str | None:
-    """
-    Build a Kanshudo-like single-line components string, simplified.
-
-    Example output:
-      "⿰ 耳 ear 戠"
-      "⿱ 宀 roof 子 child"
-      "耳 ear 戠"
-    """
-    root = kanjivg.get(kanji)
-    if root is None:
-        return None
-
-    root = _collapse_single_child_chain(root)
-    if not root.children:
-        return None
-
-    children = root.children
-    ids = _infer_ids(children)
-
-    parts: list[str] = []
-    if ids:
-        parts.append(ids)
-
-    for child in children:
-        shown = _display_component_char(child)
-        parts.append(shown)
-
-        desc = _meaning_for_component(_effective_component_key(child), kanjidic)
-        if desc:
-            parts.append(desc)
-
-    raw = " ".join(parts).strip()
-    return raw or None
-
-
-def build_kanji_from_sources(
+def build_kanji(
     kanji_char: str,
     kanjidic: dict[str, KanjiDicEntry],
-    kanjivg: dict[str, KvgNode],
+    kanjivg_components: dict[str, list[str]],
 ) -> Kanji:
-    """
-    Build your Kanji dataclass instance from already-loaded sources.
-    """
     entry = kanjidic.get(kanji_char)
     if entry is None:
-        raise KeyError(f"Kanji {kanji_char!r} not found in KANJIDIC2")
+        raise KeyError(f"Kanji not found in KANJIDIC2: {kanji_char!r}")
 
-    raw_common: dict[str, list[str]] = {
-        "on": entry.on[:],
-        "kun": entry.kun[:],
-    }
+    on_readings = join_or_none(entry.on_readings)
+    on_readings_norm = kata_to_hira(on_readings) if on_readings else None
+    kun_readings = join_or_none(entry.kun_readings)
+    name_readings = join_or_none(entry.name_readings)
+    meaning = join_or_none(entry.meanings, sep="; ")
 
-    additional: dict[str, list[str]] = {}
-    if entry.nanori:
-        additional["name"] = entry.nanori[:]
-
-    raw_components = build_raw_components_text(kanji_char, kanjidic, kanjivg)
+    raw_components = kanjivg_components.get(kanji_char, [])
+    components = join_or_none(raw_components)
 
     return Kanji(
-        kanji=entry.literal,
-        meaning=entry.meaning,
-        raw_common=raw_common,
-        raw_components=raw_components,
-        additional=additional,
+        kanji=entry.kanji,
+        meaning=meaning,
+        on_readings=on_readings,
+        on_readings_norm=on_readings_norm,
+        kun_readings=kun_readings,
+        name_readings=name_readings,
+        components=components,
+        freq=entry.freq,
     )
 
 
@@ -346,11 +241,9 @@ def build_kanji_from_files(
     kanjivg_path: str | Path,
 ) -> Kanji:
     """
-    Convenience wrapper: parse both files and build one Kanji object.
-
-    Fine for testing. For many lookups, load both files once and use
-    build_kanji_from_sources().
+    Convenience helper for one-off tests.
+    For bulk import, load both sources once and reuse them.
     """
     kanjidic = load_kanjidic2(kanjidic2_path)
-    kanjivg = load_kanjivg(kanjivg_path)
-    return build_kanji_from_sources(kanji_char, kanjidic, kanjivg)
+    kanjivg_components = load_kanjivg_components(kanjivg_path, kanjidic)
+    return build_kanji(kanji_char, kanjidic, kanjivg_components)

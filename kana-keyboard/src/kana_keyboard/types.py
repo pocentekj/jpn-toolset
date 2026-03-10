@@ -20,23 +20,8 @@ SmallKanaEntry = KanaPair | None
 YoonKanaEntry = KanaPair | None
 
 
-class RadicalEntry(TypedDict):
-    character: str
-    description: str
-
-
-class ComponentsEntry(TypedDict):
-    ids: str
-    radicals: list[RadicalEntry]
-
-
-class ReadingsEntry(TypedDict):
-    on: str
-    kun: str
-
-
 class KanjiEntry(TypedDict):
     kanji: str
-    readings: ReadingsEntry
+    on_readings: str | None
+    kun_readings: str | None
     meaning: str
-    components: ComponentsEntry

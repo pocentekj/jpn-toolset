@@ -18,7 +18,6 @@ def make_connection() -> sqlite3.Connection:
 
     return conn
 
-
 class SearchProvider:
     """Proxy class for search. Currently backed by SQLite."""
 
@@ -26,27 +25,27 @@ class SearchProvider:
         self._conn = make_connection()
         self._conn.row_factory = sqlite3.Row
 
+    def __enter__(self) -> "SearchProvider":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self._conn.close()
+
     def _row_to_entry(self, row: sqlite3.Row) -> KanjiEntry:
         return cast(
             KanjiEntry,
             {
                 "kanji": row["kanji"],
-                "readings": {
-                    "on": row["on_readings"] or "",
-                    "kun": row["kun_readings"] or "",
-                },
+                "on_readings": row["on_readings"],
+                "kun_readings": row["kun_readings"],
                 "meaning": row["meaning"],
-                "components": {
-                    "ids": row["ids"],
-                    "radicals": [],
-                },
             },
         )
 
     def by_kanji(self, kanji: str) -> list[KanjiEntry]:
         cur = self._conn.execute(
             """
-            SELECT kanji, on_readings, kun_readings, meaning, ids
+            SELECT kanji, on_readings, kun_readings, meaning
             FROM kanjis
             WHERE kanji = ?
             """,
@@ -58,12 +57,14 @@ class SearchProvider:
     def by_readings(self, reading: str) -> list[KanjiEntry]:
         cur = self._conn.execute(
             """
-            SELECT kanji, on_readings, kun_readings, meaning, ids
+            SELECT kanji, on_readings, kun_readings, meaning
             FROM kanjis
             WHERE on_readings LIKE ?
+               OR on_readings_norm LIKE ?
                OR kun_readings LIKE ?
+            ORDER BY freq
             """,
-            (f"%{reading}%", f"%{reading}%"),
+            (f"%{reading}%", f"%{reading}%", f"%{reading}%"),
         )
 
         return [self._row_to_entry(row) for row in cur.fetchall()]

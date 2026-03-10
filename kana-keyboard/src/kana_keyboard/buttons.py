@@ -29,17 +29,16 @@ class KanjiButton(KanaButtonBase):
     def new_from_entry(cls, entry: KanjiEntry) -> Self:
         button = cls(entry["kanji"])
 
-        readings = entry["readings"]
-        on = readings.get("on", "")
-        kun = readings.get("kun", "")
-        meaning = entry.get("meaning", "")
-
         tooltip_parts: list[str] = []
 
-        if on:
-            tooltip_parts.append(f"On: {on}")
-        if kun:
-            tooltip_parts.append(f"Kun: {kun}")
+        on_readings = entry.get("on_readings")
+        kun_readings = entry.get("on_readings")
+        meaning = entry.get("meaning")
+
+        if on_readings:
+            tooltip_parts.append(f"On: {on_readings}")
+        if kun_readings:
+            tooltip_parts.append(f"Kun: {kun_readings}")
         if meaning:
             tooltip_parts.append(f"Meaning: {meaning}")
 
