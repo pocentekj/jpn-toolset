@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #
 # Display 1000 most frequently used kanjis (according to KANJIDIC2)
+#
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-KANJIDIC_FILE = Path(__file__).parent.parent.parent / "kanshudo-scraper" / "data" / "kanjidic2.xml"
+KANJIDIC_FILE = Path(__file__).parent.parent.parent / "kanji-cli" / "data" / "kanjidic2.xml"
 
 
 def top_kanji_by_freq(path: str, limit: int = 1000) -> list[str]:
