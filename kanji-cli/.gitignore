@@ -23,3 +23,6 @@ Session.vim
 
 # Project directories
 .cache
+/data
+
+!.gitkeep

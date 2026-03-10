@@ -1,17 +1,14 @@
 import sys
 from dataclasses import dataclass
-from urllib.parse import quote
+from pathlib import Path
 from typing import IO, Literal
 
-import requests
+from .parser import build_kanji_from_files
+from .storage import save_kanji
 
-from kanshudo_scraper.cache import load_html, save_html
-from kanshudo_scraper.parser import parse_kanji_html
-from kanshudo_scraper.storage import save_kanji
+KANJIDIC_FILE = Path(__file__).parent.parent.parent / "data" / "kanjidic2.xml"
 
-BASE_URL = "https://www.kanshudo.com/kanji/"
-
-UA_FIREFOX = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+KANJIVG_FILE = Path(__file__).parent.parent.parent / "data" / "kanjivg-20220427.xml"
 
 
 @dataclass
@@ -19,26 +16,18 @@ class AppConfig:
     kanji: str
     output_format: Literal["pretty", "markdown", "json"]
     save: bool
+    out_file: IO = sys.stdout
+    err_file: IO = sys.stderr
 
 
-def run(config: AppConfig, out: IO = sys.stdout, err: IO = sys.stderr) -> int:
-    html = load_html(config.kanji)
+def run(config: AppConfig) -> int:
+    kanji = build_kanji_from_files(
+        kanji_char=config.kanji,
+        kanjidic2_path=KANJIDIC_FILE,
+        kanjivg_path=KANJIVG_FILE,
+    )
 
-    if html is None:
-        url = BASE_URL + quote(config.kanji)
-        headers = {"User-Agent": UA_FIREFOX}
-        response = requests.get(url, headers=headers)
-
-        if response.status_code != 200:
-            print(f"Invalid server response: {response.status_code}", file=err)
-            return 1
-
-        html = response.text
-        save_html(config.kanji, html)
-
-    kanji = parse_kanji_html(html)
-
-    print(getattr(kanji, f"format_{config.output_format}")(), file=out)
+    print(getattr(kanji, f"format_{config.output_format}")(), file=config.out_file)
 
     if config.save:
         save_kanji(kanji)
