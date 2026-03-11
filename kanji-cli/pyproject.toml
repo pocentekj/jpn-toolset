@@ -22,3 +22,4 @@ build-backend = "uv_build"
 
 [project.scripts]
 kanji = "kanji_cli.main:main"
+kanji-import = "kanji_cli.importer:main"

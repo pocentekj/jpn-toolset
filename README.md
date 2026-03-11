@@ -4,12 +4,13 @@ This is a collection of tools that help me learn the Japanese language.
 
 This repository contains a couple of mini-projects — mostly simple Python programs and scripts.
 
-It mainly uses FOSS tools and includes:
+It rely mostly on FOSS tools and contains, among others:
 
 * search for kanji definitions
-* simple on-screen kana/kanji keyboard prototyped with *PyGTK*
+* import kanji definitions from **KANJIDIC2** and **KanjiVG**
+* on-screen kana/kanji keyboard frontend made with **GTK 4**
 * wrapper for *Whisper* generating Japanese transcriptions from `.wav` files
-* scripts for extracting audio and remuxing `.mkv` containers with *ffmpeg* and MKVToolNix tools
+* scripts for extracting audio and remuxing `.mkv` containers with **ffmpeg** and **MKVToolNix** tools
 * katakana to hiragana command line converter
 
 ## ⚠️ Work in Progress

@@ -1,14 +1,10 @@
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 from typing import IO, Literal
 
+from .config import KANJIDIC_FILE, KANJIVG_FILE
 from .parser import build_kanji_from_files
-from .storage import save_kanji
-
-KANJIDIC_FILE = Path(__file__).parent.parent.parent / "data" / "kanjidic2.xml"
-
-KANJIVG_FILE = Path(__file__).parent.parent.parent / "data" / "kanjivg-20220427.xml"
+from .storage import save_kanjis
 
 
 @dataclass
@@ -30,7 +26,7 @@ def run(config: AppConfig) -> int:
     print(getattr(kanji, f"format_{config.output_format}")(), file=config.out_file)
 
     if config.save:
-        save_kanji(kanji)
+        save_kanjis((kanji,))
 
     return 0
 

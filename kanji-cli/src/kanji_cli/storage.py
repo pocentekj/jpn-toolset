@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from pathlib import Path
+from collections.abc import Iterable
 
 from .kanji import Kanji
 
@@ -18,12 +19,25 @@ def make_connection() -> sqlite3.Connection:
     return conn
 
 
-def save_kanji(entry: Kanji) -> None:
-    if not entry.kanji:
-        raise ValueError("Kanji entry has no kanji character")
+def save_kanjis(entries: Iterable[Kanji]) -> None:
+    rows = []
+
+    for entry in entries:
+        rows.append(
+            (
+                entry.kanji,
+                entry.on_readings,
+                entry.on_readings_norm,
+                entry.kun_readings,
+                entry.name_readings,
+                entry.meaning,
+                entry.components,
+                entry.freq,
+            )
+        )
 
     with make_connection() as conn:
-        conn.execute(
+        conn.executemany(
             """
             INSERT INTO kanjis (
                 kanji,
@@ -45,14 +59,5 @@ def save_kanji(entry: Kanji) -> None:
                 components = excluded.components,
                 freq = excluded.freq
             """,
-            (
-                entry.kanji,
-                entry.on_readings,
-                entry.on_readings_norm,
-                entry.kun_readings,
-                entry.name_readings,
-                entry.meaning,
-                entry.components,
-                entry.freq,
-            ),
+            rows,
         )
