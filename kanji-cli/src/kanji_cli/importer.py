@@ -43,6 +43,9 @@ def run() -> int:
             kanjis = []
             print(f"{count}/{total}")
 
+    if kanjis:
+        save_kanjis(kanjis)
+
     print(f"Imported {count} kanji")
 
     return 0
