@@ -30,15 +30,17 @@ def save_kanji(entry: Kanji) -> None:
                 on_readings,
                 on_readings_norm,
                 kun_readings,
+                name_readings,
                 meaning,
                 components,
                 freq
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(kanji) DO UPDATE SET
                 on_readings = excluded.on_readings,
                 on_readings_norm = excluded.on_readings_norm,
                 kun_readings = excluded.kun_readings,
+                name_readings = excluded.name_readings,
                 meaning = excluded.meaning,
                 components = excluded.components,
                 freq = excluded.freq
@@ -48,6 +50,7 @@ def save_kanji(entry: Kanji) -> None:
                 entry.on_readings,
                 entry.on_readings_norm,
                 entry.kun_readings,
+                entry.name_readings,
                 entry.meaning,
                 entry.components,
                 entry.freq,

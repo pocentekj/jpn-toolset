@@ -18,6 +18,7 @@ class KanjiPage(PageBase, Gtk.Box):
     results_box = Gtk.Template.Child()
     kanji_search_entry = Gtk.Template.Child()
     reading_search_entry = Gtk.Template.Child()
+    meaning_search_entry = Gtk.Template.Child()
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -39,13 +40,16 @@ class KanjiPage(PageBase, Gtk.Box):
     def _update_display(self) -> None:
         kanji_query = self.kanji_search_entry.get_text().strip()
         reading_query = self.reading_search_entry.get_text().strip()
+        meaning_query = self.meaning_search_entry.get_text().strip()
 
-        if kanji_query:
-            results = self._kanjis.by_kanji(kanji_query)
-        elif reading_query:
-            results = self._kanjis.by_readings(reading_query)
-        else:
+        if not kanji_query and not reading_query and not meaning_query:
             results = []
+        else:
+            results = self._kanjis.filter(
+                kanji=kanji_query,
+                reading=reading_query,
+                meaning=meaning_query,
+            )
 
         self._clear_results_box()
 
@@ -54,10 +58,6 @@ class KanjiPage(PageBase, Gtk.Box):
             button.connect("clicked", self._on_button_clicked)
             self.results_box.append(button)
 
-    @Gtk.Template.Callback("on_search_by_kanji")
-    def _on_search_by_kanji(self, _entry: Gtk.SearchEntry) -> None:
-        self._update_display()
-
-    @Gtk.Template.Callback("on_search_by_readings")
-    def _on_search_by_readings(self, _entry: Gtk.SearchEntry) -> None:
+    @Gtk.Template.Callback("on_search")
+    def _on_search(self, _entry: Gtk.SearchEntry) -> None:
         self._update_display()

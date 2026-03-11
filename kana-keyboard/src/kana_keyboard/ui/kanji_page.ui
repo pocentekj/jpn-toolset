@@ -23,7 +23,15 @@
           <object class="GtkSearchEntry" id="kanji_search_entry">
             <property name="hexpand">true</property>
             <property name="placeholder-text">Search by kanji…</property>
-            <signal name="search-changed" handler="on_search_by_kanji"/>
+            <signal name="search-changed" handler="on_search"/>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkSearchEntry" id="meaning_search_entry">
+            <property name="hexpand">true</property>
+            <property name="placeholder-text">Search by meaning…</property>
+            <signal name="search-changed" handler="on_search"/>
           </object>
         </child>
 
@@ -31,7 +39,7 @@
           <object class="GtkSearchEntry" id="reading_search_entry">
             <property name="hexpand">true</property>
             <property name="placeholder-text">Search by reading…</property>
-            <signal name="search-changed" handler="on_search_by_readings"/>
+            <signal name="search-changed" handler="on_search"/>
           </object>
         </child>
       </object>

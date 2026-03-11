@@ -18,18 +18,13 @@ def make_connection() -> sqlite3.Connection:
 
     return conn
 
+
 class SearchProvider:
     """Proxy class for search. Currently backed by SQLite."""
 
     def __init__(self) -> None:
         self._conn = make_connection()
         self._conn.row_factory = sqlite3.Row
-
-    def __enter__(self) -> "SearchProvider":
-        return self
-
-    def __exit__(self, exc_type, exc, tb) -> None:
-        self._conn.close()
 
     def _row_to_entry(self, row: sqlite3.Row) -> KanjiEntry:
         return cast(
@@ -42,7 +37,7 @@ class SearchProvider:
             },
         )
 
-    def by_kanji(self, kanji: str) -> list[KanjiEntry]:
+    def _by_kanji(self, kanji: str) -> list[KanjiEntry]:
         cur = self._conn.execute(
             """
             SELECT kanji, on_readings, kun_readings, meaning
@@ -54,17 +49,41 @@ class SearchProvider:
 
         return [self._row_to_entry(row) for row in cur.fetchall()]
 
-    def by_readings(self, reading: str) -> list[KanjiEntry]:
-        cur = self._conn.execute(
-            """
-            SELECT kanji, on_readings, kun_readings, meaning
-            FROM kanjis
-            WHERE on_readings LIKE ?
-               OR on_readings_norm LIKE ?
-               OR kun_readings LIKE ?
-            ORDER BY freq
-            """,
-            (f"%{reading}%", f"%{reading}%", f"%{reading}%"),
-        )
+    def filter(
+        self,
+        kanji: str | None = None,
+        reading: str | None = None,
+        meaning: str | None = None,
+    ) -> list[KanjiEntry]:
+        if kanji is not None and kanji.strip():
+            return self._by_kanji(kanji=kanji.strip())
 
+        stmt = """
+        SELECT kanji, on_readings, kun_readings, meaning
+        FROM kanjis
+        """
+
+        conditions: list[str] = []
+        args: list[str] = []
+
+        if reading is not None and reading.strip():
+            reading = reading.strip()
+            conditions.append(
+                """(on_readings LIKE ?
+                   OR on_readings_norm LIKE ?
+                   OR kun_readings LIKE ?)"""
+            )
+            args.extend([f"%{reading}%", f"%{reading}%", f"%{reading}%"])
+
+        if meaning is not None and meaning.strip():
+            meaning = meaning.strip()
+            conditions.append("meaning LIKE ?")
+            args.append(f"%{meaning}%")
+
+        if conditions:
+            stmt += " WHERE " + " AND ".join(conditions)
+
+        stmt += " ORDER BY freq"
+
+        cur = self._conn.execute(stmt, args)
         return [self._row_to_entry(row) for row in cur.fetchall()]

@@ -32,7 +32,7 @@ class KanjiButton(KanaButtonBase):
         tooltip_parts: list[str] = []
 
         on_readings = entry.get("on_readings")
-        kun_readings = entry.get("on_readings")
+        kun_readings = entry.get("kun_readings")
         meaning = entry.get("meaning")
 
         if on_readings:

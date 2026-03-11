@@ -44,8 +44,13 @@ class Kanji:
             "| | Reading |\n"
             "| ----------- | ----------- |\n"
             f"on | {self.on_readings} |\n"
-            f"kun | {self.kun_readings} |\n\n"
+            f"kun | {self.kun_readings} |\n"
         )
+
+        if self.name_readings:
+            table += f"name | {self.name_readings} |\n"
+
+        table += "\n"
 
         comp = ""
         if self.components:
