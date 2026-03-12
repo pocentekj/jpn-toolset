@@ -1,26 +1,30 @@
 import time
 import sqlite3
-from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 
 from .config import DICT_PATH
+from .dict_entry import DictEntry
 from .db import make_connection
 
 
-@dataclass
-class DictEntry:
-    headword: str
-    reading: str | None
-    gloss: str
-
-
 def _format_timestamp(seconds: float) -> str:
-    """Convert seconds to SRT timestamp format."""
-    millis = int((seconds % 1) * 1000)
-    seconds = int(seconds)
-    mins, secs = divmod(seconds, 60)
-    hours, mins = divmod(mins, 60)
-    return f"{hours:02}:{mins:02}:{secs:02},{millis:03}"
+    if seconds >= 24 * 3600:
+        return f"{seconds:.2f}s"
+
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = seconds % 60
+
+    parts: list[str] = []
+
+    if hours:
+        parts.append(f"{hours}h")
+    if minutes:
+        parts.append(f"{minutes}m")
+    if secs or not parts:
+        parts.append(f"{secs:.2f}s")
+
+    return " ".join(parts)
 
 
 def _parse_entry(entry: ET.Element) -> DictEntry | None:
@@ -79,10 +83,13 @@ def run() -> int:
             count += 1
             if count % 500 == 0:
                 _save_entries(conn, entries)
+                print(".", end="")
                 entries = []
 
         if entries:
             _save_entries(conn, entries)
+
+        print("")
 
     print(f"Imported {count} words")
     return 0

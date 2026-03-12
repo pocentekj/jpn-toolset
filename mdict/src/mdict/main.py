@@ -28,7 +28,6 @@ def main() -> int:  # noqa
         help="disable colored output",
     )
     args = parser.parse_args()
-    # use_color = not args.no_color and sys.stdout.isatty()
     return run(args.term, not args.no_color)
 
 

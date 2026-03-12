@@ -20,14 +20,13 @@ def make_connection() -> sqlite3.Connection:
     conn.execute("PRAGMA temp_store = MEMORY")
     conn.execute("PRAGMA cache_size = -20000")
 
+    conn.row_factory = sqlite3.Row
+
     return conn
 
 
 def search_entries(term: str) -> list[DictEntry]:
-    conn = make_connection()
-    conn.row_factory = sqlite3.Row
-
-    with conn:
+    with make_connection() as conn:
         cur = conn.execute(
             """
             SELECT headword, reading, gloss

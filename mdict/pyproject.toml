@@ -20,4 +20,4 @@ build-backend = "uv_build"
 
 [project.scripts]
 mdict = "mdict.main:main"
-dict-import = "mdict.importer:main"
+mdict-import = "mdict.importer:main"
