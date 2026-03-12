@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Tools
+.coverage
+.ruff_cache/
+
+# Virtual environments
+.venv
+
+# Editor & IDE stuff
+Session.vim
+
+# Local development
+.env
+.envrc
+.tmuxp.yaml
+
+# Project directories
+.cache
+src/mdict/data/
+
+# Keep data structure
+!src/mdict/data/schema.sql

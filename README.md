@@ -12,6 +12,7 @@ It rely mostly on FOSS tools and contains, among others:
 * wrapper for *Whisper* generating Japanese transcriptions from `.wav` files
 * scripts for extracting audio and remuxing `.mkv` containers with **ffmpeg** and **MKVToolNix** tools
 * katakana to hiragana command line converter
+* offline Japanese/English dictionary built with **JMdict** open database
 
 ## ⚠️ Work in Progress
 
