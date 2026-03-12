@@ -20,14 +20,10 @@ def format_timestamp(seconds: float) -> str:
 
 
 def run() -> int:
-    print("Loading KANJIDIC2...")
     kanjidic = load_kanjidic2(KANJIDIC_FILE)
-
-    print("Loading KanjiVG components...")
     components = load_kanjivg_components(KANJIVG_FILE, kanjidic)
-
     total = len(kanjidic)
-    print(f"Importing {total} kanji...")
+    print(f"Started import of {total} kanji...")
 
     count = 0
 
@@ -53,13 +49,9 @@ def run() -> int:
 
 def main() -> int:
     start_time = time.perf_counter()
-
-    print("Starting import...")
     result = run()
-
     end_time = format_timestamp(time.perf_counter() - start_time)
     print(f"Done in {end_time}")
-
     return result
 
 

@@ -73,7 +73,7 @@ class SearchProvider:
                    OR on_readings_norm LIKE ?
                    OR kun_readings LIKE ?)"""
             )
-            args.extend([f"%{reading}%", f"%{reading}%", f"%{reading}%"])
+            args += [f"%{reading}%", f"%{reading}%", f"%{reading}%"]
 
         if meaning is not None and meaning.strip():
             meaning = meaning.strip()

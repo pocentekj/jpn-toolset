@@ -1,3 +1,5 @@
+# This file is mostly AI-generated
+
 from dataclasses import dataclass
 from pathlib import Path
 import xml.etree.ElementTree as ET
