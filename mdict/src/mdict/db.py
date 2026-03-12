@@ -25,7 +25,7 @@ def make_connection() -> sqlite3.Connection:
     return conn
 
 
-def search_entries(term: str) -> list[DictEntry]:
+def search_entries(term: str, limit: int = 50) -> list[DictEntry]:
     with make_connection() as conn:
         cur = conn.execute(
             """
@@ -42,8 +42,8 @@ def search_entries(term: str) -> list[DictEntry]:
                 END,
                 LENGTH(headword),
                 headword
-            LIMIT 50
+            LIMIT ?
             """,
-            (term, term, f"{term}%", term, term),
+            (term, term, f"{term}%", term, term, limit),
         )
         return [_row_to_entry(row) for row in cur.fetchall()]

@@ -8,7 +8,7 @@ class DictEntry:
     gloss: str
 
     def __str__(self) -> str:
-        reading = f" ({self.reading})" if self.reading else ""
+        reading = f"（{self.reading}）" if self.reading else ""
         return f"{self.headword}{reading}: {self.gloss}"
 
     def format_for(self, search_term: str) -> str:

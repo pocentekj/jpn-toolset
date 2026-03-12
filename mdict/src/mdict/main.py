@@ -1,20 +1,38 @@
 import sys
 import argparse
+from dataclasses import dataclass
 from typing import IO
+
 from .db import search_entries
 
 
-def run(term: str, use_color: bool, out_file: IO = sys.stdout):
-    results = search_entries(term)
+@dataclass
+class AppConfig:
+    # Search by dict word or reading (hiragana)
+    term: str
+
+    # Highlight search term in output
+    use_color: bool
+
+    # LIMIT for search query
+    max_results: int
+
+    out_file: IO = sys.stdout
+    err_file: IO = sys.stderr
+
+
+def run(config: AppConfig):
+    results = search_entries(config.term, config.max_results)
 
     if not results:
+        print("No results", file=config.err_file)
         return 2
 
     for dict_entry in results:
-        if use_color:
-            print(dict_entry.format_for(term), file=out_file)
+        if config.use_color:
+            print(dict_entry.format_for(config.term), file=config.out_file)
         else:
-            print(dict_entry, file=out_file)
+            print(dict_entry, file=config.out_file)
 
     return 0
 
@@ -27,8 +45,23 @@ def main() -> int:  # noqa
         action="store_true",
         help="disable colored output",
     )
+    parser.add_argument(
+        "-n",
+        type=int,
+        default=50,
+        dest="max_results",
+        help="max results to be displayed",
+    )
+
     args = parser.parse_args()
-    return run(args.term, not args.no_color)
+
+    return run(
+        AppConfig(
+            term=args.term,
+            use_color=not args.no_color,
+            max_results=args.max_results,
+        )
+    )
 
 
 if __name__ == "__main__":  # noqa
