@@ -17,3 +17,18 @@ It rely mostly on FOSS tools and contains, among others:
 ## ⚠️ Work in Progress
 
 **Important:** This project is currently in early stage of development.
+
+## So why not *the ultimate Japanese learning tool powered by AI*?
+
+Because learning Japanese is mostly about reading, looking things up, and
+repeating that process thousands of times.
+
+These tools are designed to make that loop as fast and frictionless as possible, and integrate naturally with a terminal workflow.
+
+## Typical workflow
+
+![workflow](./screenshots/screenshot-1.webp)
+
+## Kana keyboard
+
+![kana-keyboard](./screenshots/screenshot-2.webp)
