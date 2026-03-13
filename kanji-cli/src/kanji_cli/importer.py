@@ -10,13 +10,24 @@ from .parser import (
 from .storage import save_kanjis
 
 
-def format_timestamp(seconds: float) -> str:
-    """Convert seconds to SRT timestamp format."""
-    millis = int((seconds % 1) * 1000)
-    seconds = int(seconds)
-    mins, secs = divmod(seconds, 60)
-    hours, mins = divmod(mins, 60)
-    return f"{hours:02}:{mins:02}:{secs:02},{millis:03}"
+def _format_timestamp(seconds: float) -> str:
+    if seconds >= 24 * 3600:
+        return f"{seconds:.2f}s"
+
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = seconds % 60
+
+    parts: list[str] = []
+
+    if hours:
+        parts.append(f"{hours}h")
+    if minutes:
+        parts.append(f"{minutes}m")
+    if secs or not parts:
+        parts.append(f"{secs:.2f}s")
+
+    return " ".join(parts)
 
 
 def run() -> int:
@@ -50,7 +61,7 @@ def run() -> int:
 def main() -> int:
     start_time = time.perf_counter()
     result = run()
-    end_time = format_timestamp(time.perf_counter() - start_time)
+    end_time = _format_timestamp(time.perf_counter() - start_time)
     print(f"Done in {end_time}")
     return result
 

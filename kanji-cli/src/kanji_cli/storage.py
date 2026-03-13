@@ -8,7 +8,7 @@ from .kanji import Kanji
 KANJIS_DB = Path(os.environ.get("HOME", ".")) / ".local" / "share" / "kanjis.sqlite"
 
 
-def make_connection() -> sqlite3.Connection:
+def _make_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(KANJIS_DB)
 
     conn.execute("PRAGMA journal_mode = WAL")
@@ -36,7 +36,7 @@ def save_kanjis(entries: Iterable[Kanji]) -> None:
             )
         )
 
-    with make_connection() as conn:
+    with _make_connection() as conn:
         conn.executemany(
             """
             INSERT INTO kanjis (
