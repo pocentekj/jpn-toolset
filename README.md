@@ -28,7 +28,3 @@ These tools are designed to make that loop as fast and frictionless as possible,
 ## Typical workflow
 
 ![workflow](./screenshots/screenshot-1.webp)
-
-## Kana keyboard
-
-![kana-keyboard](./screenshots/screenshot-2.webp)
