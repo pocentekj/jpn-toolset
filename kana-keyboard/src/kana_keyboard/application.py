@@ -35,6 +35,9 @@ class KanaApplication(Gtk.Application):
         super().__init__(application_id="com.example.KanaKeyboard")
 
     def do_activate(self):
+        settings = Gtk.Settings.get_default()
+        settings.set_property("gtk-application-prefer-dark-theme", True)
+
         css_provider = Gtk.CssProvider()
         css_provider.load_from_path(resource("style.css"))
 
